@@ -144,6 +144,7 @@ INSTALLED_APPS = [
     "cvat.apps.health",
     "cvat.apps.events",
     "cvat.apps.quality_control",
+    "cvat.apps.model_assisted_qc",
     "cvat.apps.redis_handler",
     "cvat.apps.consensus",
     "cvat.apps.access_tokens",

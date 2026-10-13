@@ -1,5 +1,13 @@
 # Project Specific
-/data/
+/data/*
+# Self-contained QA/QC demo artifacts required after a fresh clone.
+!/data/bdd100k_mvp_100_seed42/
+/data/bdd100k_mvp_100_seed42/*
+!/data/bdd100k_mvp_100_seed42/bdd100k_mvp_100_seed42_images.zip
+!/data/bdd100k_mvp_100_seed42/cvat_labels_raw.json
+!/data/bdd100k_mvp_100_seed42/model_outputs/
+/data/bdd100k_mvp_100_seed42/model_outputs/*
+!/data/bdd100k_mvp_100_seed42/model_outputs/prelabels_yolov8n_cvat_v2.zip
 /events/
 /share/
 /static/
@@ -10,6 +18,7 @@
 
 # Ignore temporary files
 docker-compose.override.yml
+!docker-compose.override.yml
 __pycache__
 *.pyc
 ._*

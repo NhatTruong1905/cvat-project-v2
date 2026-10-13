@@ -45,6 +45,9 @@ if apps.is_installed("cvat.apps.webhooks"):
 if apps.is_installed("cvat.apps.quality_control"):
     urlpatterns.append(path("api/", include("cvat.apps.quality_control.urls")))
 
+if apps.is_installed("cvat.apps.model_assisted_qc"):
+    urlpatterns.append(path("api/model-assisted-qc/", include("cvat.apps.model_assisted_qc.urls")))
+
 if apps.is_installed("silk"):
     urlpatterns.append(path("profiler/", include("silk.urls")))
 

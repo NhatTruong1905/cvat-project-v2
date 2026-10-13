@@ -6,8 +6,14 @@ from .phase3_condition_threshold.views import ConditionSummaryView, ThresholdAna
 from .phase4_risk_review.views import AlertDetailView, AlertQueueView
 from .phase5_human_review.views import AlertReviewView
 from .phase6_benchmark.views import BenchmarkView
+from .views import DashboardView, FrameEvaluationView, PredictionImportView, RiskQueueView, RiskStatusView
 
 urlpatterns = [
+    path("dashboard", DashboardView.as_view()),
+    path("jobs/<int:job_id>/predictions", PredictionImportView.as_view()),
+    path("jobs/<int:job_id>/frames/<int:frame>/evaluate", FrameEvaluationView.as_view()),
+    path("jobs/<int:job_id>/risks", RiskQueueView.as_view()),
+    path("jobs/<int:job_id>/risks/<int:risk_id>", RiskStatusView.as_view()),
     path("condition-summary", ConditionSummaryView.as_view()),
     path("tasks/<int:task_id>/dataset", DatasetView.as_view()),
     path("tasks/<int:task_id>/validate-ground-truth", GroundTruthValidationView.as_view()),

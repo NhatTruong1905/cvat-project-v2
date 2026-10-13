@@ -1,0 +1,48 @@
+# Loaded automatically by `docker compose up -d`.
+# It builds the local QA/QC-enabled CVAT source. The referee model is downloaded
+# and run inside Docker; weights and predictions are kept out of Git.
+services:
+  model_qc_pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile.model-qc
+    image: cvat/model-qc-pipeline:dev
+    restart: "no"
+    volumes:
+      - ./data/bdd100k_mvp_100_seed42/bdd100k_mvp_100_seed42_images.zip:/input/images.zip:ro
+      - model_qc_output:/output
+      - model_qc_weights:/cache
+    command:
+      - --images
+      - /input/images.zip
+      - --output
+      - /output
+      - --referee-repo
+      - dronefreak/bdd100k-yolov8s
+      - --referee-file
+      - best.pt
+      - --referee-confidence
+      - "0.01"
+      - --image-size
+      - "960"
+      - --skip-existing
+
+  cvat_server:
+    build:
+      context: .
+    environment:
+      MODEL_ASSISTED_QC_PREDICTIONS: /opt/cvat/model_qc/referee_predictions.json
+    depends_on:
+      model_qc_pipeline:
+        condition: service_completed_successfully
+    volumes:
+      - model_qc_output:/opt/cvat/model_qc:ro
+
+  cvat_ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+
+volumes:
+  model_qc_output:
+  model_qc_weights:

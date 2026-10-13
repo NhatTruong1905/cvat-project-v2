@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hướng dẫn Annotator — Label và QA/QC</title>
+  <style>
+    :root{--blue:#1769d2;--navy:#102d52;--ink:#172033;--muted:#647184;--line:#dbe3ed;--bg:#f4f7fb;--ok:#16834a;--warn:#a65a00}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Segoe UI",Arial,sans-serif}
+    header{background:linear-gradient(125deg,var(--navy),var(--blue));color:white;padding:48px 20px 72px}header div,main{max-width:920px;margin:auto}
+    h1{font-size:clamp(32px,5vw,48px);line-height:1.12;margin:5px 0 12px}header p{font-size:19px;color:#e9f2ff;margin:0}
+    main{background:white;border:1px solid var(--line);border-radius:15px;box-shadow:0 14px 36px #15385b18;margin-top:-38px;margin-bottom:50px;overflow:hidden}
+    section{padding:30px 38px;border-bottom:1px solid var(--line)}section:last-child{border:0}h2{margin:0 0 13px;font-size:25px}h3{margin:21px 0 7px}
+    li+li{margin-top:8px}.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.flow div{padding:16px;text-align:center;border:1px solid #cbdcf3;border-radius:10px;background:#f2f7ff}.flow b{display:block;color:var(--blue);font-size:24px}
+    .note,.ok,.warn{padding:13px 15px;margin:15px 0;border-left:4px solid;border-radius:7px}.note{background:#edf5ff;border-color:var(--blue)}.ok{background:#eef9f3;border-color:var(--ok)}.warn{background:#fff7e7;border-color:var(--warn)}
+    table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{border:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{background:#eef3f8}
+    code{background:#eef2f7;padding:2px 5px;border-radius:4px}.check{list-style:none;padding:0}.check li{background:#f6f8fb;padding:9px 11px;border-radius:7px}.check li:before{content:"☐";color:var(--blue);font-weight:bold;margin-right:9px}
+    footer{text-align:center;color:var(--muted);padding:20px}@media(max-width:650px){section{padding:24px 19px}.flow{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header><div><small>CHỈ DÀNH CHO ANNOTATOR</small><h1>Label và kiểm tra QA/QC</h1><p>Annotate như bình thường, lưu kết quả và dùng QA/QC để xem đúng vị trí cần kiểm tra lại.</p></div></header>
+<main>
+  <section>
+    <h2>Quy trình 3 bước</h2>
+    <div class="flow"><div><b>1</b>Label hoặc sửa box</div><div><b>2</b>Save rồi nhấn QA/QC</div><div><b>3</b>Chọn “Chỉ lỗi” và xử lý</div></div>
+    <div class="note">Annotator không cần chạy model, không cần import prediction trọng tài và không cần xem Ground Truth.</div>
+  </section>
+  <section>
+    <h2>1. Mở công việc</h2>
+    <ol><li>Mở <code>http://localhost:8080</code> và đăng nhập.</li><li>Vào <b>Tasks</b>, mở task được giao.</li><li>Nhấn <b>Open</b> để vào màn hình annotation.</li></ol>
+    <div class="warn">Chỉ làm đúng task/job được giao. Không thay đổi labels hoặc cấu hình task.</div>
+  </section>
+  <section>
+    <h2>2. Label ảnh</h2>
+    <ul><li>Kiểm tra các box prelabel có sẵn.</li><li>Sửa box lệch, sửa class sai, xóa box không có vật thật và vẽ thêm vật bị thiếu.</li><li>Nhấn <b>Save</b> trước khi chạy QA/QC.</li></ul>
+    <h3>Checklist trước khi Save</h3>
+    <ul class="check"><li>Box ôm đúng vật thể.</li><li>Class đúng.</li><li>Không bỏ sót vật thể cần gán.</li><li>Không có hai box trùng cùng một vật.</li></ul>
+  </section>
+  <section>
+    <h2>3. Dùng QA/QC</h2>
+    <ol><li>Nhấn nút <b>QA/QC</b> trên thanh công cụ.</li><li>Chờ thông báo kiểm tra hoàn tất.</li><li>Danh sách hiển thị risk thuộc nhóm frame ưu tiên theo điểm PD.</li><li>Nhấn số <b>Frame</b> hoặc nút <b>Chỉ lỗi</b>.</li><li>CVAT chuyển tới đúng frame và phủ vùng sọc đỏ tại vị trí cần kiểm tra.</li></ol>
+    <table><thead><tr><th>Risk</th><th>Cần kiểm tra</th><th>Cách xử lý</th></tr></thead><tbody>
+      <tr><td><b>DROP</b></td><td>Có thể thiếu object</td><td>Nếu có vật thật, vẽ thêm box.</td></tr>
+      <tr><td><b>FLIP</b></td><td>Có thể sai class</td><td>Quan sát ảnh và đổi class nếu cần.</td></tr>
+      <tr><td><b>SHIFT</b></td><td>Box có thể bị lệch</td><td>Chỉnh box ôm sát vật thể.</td></tr>
+      <tr><td><b>SPAWN</b></td><td>Box người vẽ có thể không tồn tại</td><td>Xóa nếu là box thừa; giữ nếu vật thể có thật.</td></tr>
+    </tbody></table>
+  </section>
+  <section>
+    <h2>4. Xác nhận cảnh báo</h2>
+    <ul><li>Nếu cảnh báo đúng: sửa annotation, Save, sau đó chọn <b>Confirm</b>.</li><li>Nếu annotation đã đúng và model cảnh báo nhầm: chọn <b>False alarm</b>.</li><li>Sau khi sửa, nhấn <b>Kiểm tra lại frame</b> để cập nhật risk.</li></ul>
+    <div class="ok">Luôn tin vào ảnh và guideline của dự án. Model chỉ là trọng tài hỗ trợ, không phải Ground Truth.</div>
+  </section>
+  <section>
+    <h2>5. Kết thúc job</h2>
+    <ul class="check"><li>Đã Save thay đổi cuối cùng.</li><li>Đã xử lý các risk được QA/QC đưa ra.</li><li>Không còn cảnh báo đúng nhưng chưa sửa.</li><li>Đã chuyển trạng thái job theo quy trình của nhóm.</li></ul>
+  </section>
+  <section>
+    <h2>Khi gặp lỗi</h2>
+    <table><tbody><tr><th>Không thấy nút QA/QC</th><td>Refresh cứng bằng <code>Ctrl + F5</code>.</td></tr><tr><th>Không có risk</th><td>Save frame, sau đó nhấn <b>Kiểm tra lại frame</b>.</td></tr><tr><th>“No referee predictions”</th><td>Báo người quản trị; annotator không tự import model.</td></tr><tr><th>Vùng đỏ không đúng</th><td>Chọn <b>False alarm</b> và tiếp tục theo ảnh thật.</td></tr></tbody></table>
+  </section>
+  <footer>Model-Assisted QA/QC · Hướng dẫn thao tác dành cho Annotator</footer>
+</main>
+</body>
+</html>

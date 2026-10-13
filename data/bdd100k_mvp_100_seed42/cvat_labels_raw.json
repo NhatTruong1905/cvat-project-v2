@@ -1,0 +1,12 @@
+[
+  { "name": "pedestrian", "color": "#ef5350", "type": "rectangle", "attributes": [] },
+  { "name": "rider", "color": "#ab47bc", "type": "rectangle", "attributes": [] },
+  { "name": "car", "color": "#42a5f5", "type": "rectangle", "attributes": [] },
+  { "name": "truck", "color": "#26a69a", "type": "rectangle", "attributes": [] },
+  { "name": "bus", "color": "#66bb6a", "type": "rectangle", "attributes": [] },
+  { "name": "train", "color": "#d4e157", "type": "rectangle", "attributes": [] },
+  { "name": "motorcycle", "color": "#ffa726", "type": "rectangle", "attributes": [] },
+  { "name": "bicycle", "color": "#8d6e63", "type": "rectangle", "attributes": [] },
+  { "name": "traffic light", "color": "#ec407a", "type": "rectangle", "attributes": [] },
+  { "name": "traffic sign", "color": "#7e57c2", "type": "rectangle", "attributes": [] }
+]

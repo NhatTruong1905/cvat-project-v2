@@ -1,0 +1,10 @@
+FROM ultralytics/ultralytics:latest-cpu
+
+ENV PYTHONUNBUFFERED=1 YOLO_CONFIG_DIR=/cache/ultralytics
+
+RUN python -m pip install --no-cache-dir huggingface_hub==0.35.3
+
+WORKDIR /app
+COPY utils/model_qc/run_two_model_pipeline.py /app/run_two_model_pipeline.py
+
+ENTRYPOINT ["python", "/app/run_two_model_pipeline.py"]

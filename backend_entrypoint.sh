@@ -54,7 +54,10 @@ cmd_init() {
 _load_component_config() {
     declare -gA merged_config=()
     for config_file in "$SCRIPT_DIR/backend_entrypoint.d/"*.conf; do
-        declare -A config=$(cat $config_file)
+        # Git on Windows can check these bash array config files out with CRLF.
+        # Strip carriage returns so queue names do not become "import\r", etc.
+        config_content=$(tr -d '\r' < "$config_file")
+        declare -A config="$config_content"
         for key in "${!config[@]}"; do
             if [[ -n ${merged_config[$key]+_} ]]; then
                 fail "Duplicated component definition: $key"

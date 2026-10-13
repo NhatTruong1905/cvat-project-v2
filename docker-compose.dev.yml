@@ -27,8 +27,11 @@ services:
       # If 'yes', wait for a debugger connection on startup
       CVAT_DEBUG_WAIT: '${CVAT_DEBUG_WAIT_CLIENT:-no}'
       COVERAGE_PROCESS_START:
+      MODEL_ASSISTED_QC_PREDICTIONS: /opt/cvat/model_qc/referee_predictions.json
     ports:
       - '127.0.0.1:9090:9090'
+    volumes:
+      - ./data/bdd100k_mvp_100_seed42/model_outputs/referee_predictions.json:/opt/cvat/model_qc/referee_predictions.json:ro
 
   cvat_worker_export:
     environment:
