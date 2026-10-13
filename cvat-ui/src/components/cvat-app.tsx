@@ -39,7 +39,6 @@ import QAQCDashboard from 'components/qaqc-dashboard/qaqc-dashboard';
 import TasksPageContainer from 'containers/tasks-page/tasks-page';
 import CreateTaskPageContainer from 'containers/create-task-page/create-task-page';
 import TaskPageComponent from 'components/task-page/task-page';
-import ModelAssistedQCPage from 'components/model-assisted-qc-page/model-assisted-qc-page';
 
 import ProjectsPageComponent from 'components/projects-page/projects-page';
 import CreateProjectPageComponent from 'components/create-project-page/create-project-page';
@@ -568,7 +567,6 @@ class CVATApplication extends React.PureComponent<CVATAppProps & RouteComponentP
                                         <Route exact path='/tasks' component={TasksPageContainer} />
                                         <Route exact path='/tasks/create' component={CreateTaskPageContainer} />
                                         <Route exact path='/tasks/:id' component={TaskPageComponent} />
-                                        <Route exact path='/tasks/:tid/model-assisted-qc' component={ModelAssistedQCPage} />
                                         <Route exact path='/tasks/:tid/quality-control' component={QualityControlPage} />
                                         <Route exact path='/tasks/:tid/analytics' component={AnalyticsReportPage} />
                                         <Route exact path='/tasks/:tid/consensus' component={ConsensusManagementPage} />

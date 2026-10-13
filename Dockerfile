@@ -165,16 +165,6 @@ RUN --mount=type=bind,from=build-image,source=/tmp/wheelhouse,target=/mnt/wheelh
     --mount=type=bind,from=build-image-av,source=/tmp/wheelhouse,target=/mnt/wheelhouse-av \
     python -m pip install --no-index /mnt/wheelhouse/*.whl /mnt/wheelhouse-av/*.whl
 
-COPY cvat/apps/model_assisted_qc/requirements.txt /tmp/model-assisted-qc-requirements.txt
-RUN --mount=type=cache,target=/root/.cache/pip/http-v2 \
-    python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
-    python -m pip install -r /tmp/model-assisted-qc-requirements.txt && \
-    mkdir -p /opt/cvat/evaluation-data/models && \
-    YOLO_CONFIG_DIR=/tmp/ultralytics python -c \
-        "from ultralytics import YOLO; model = YOLO('yolov8x.pt'); model.save('/opt/cvat/evaluation-data/models/yolov8x.pt')" && \
-    mkdir -p /tmp/Ultralytics && \
-    chown -R 1000:1000 /tmp/Ultralytics
-
 ENV NUMPROCS=1
 COPY --from=build-image-av /opt/ffmpeg/lib /usr/lib
 

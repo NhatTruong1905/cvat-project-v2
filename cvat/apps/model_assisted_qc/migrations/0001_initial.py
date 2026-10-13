@@ -1,35 +1,46 @@
-from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
     initial = True
-    dependencies = [("engine", "0108_profile_registration_survey_fields"), migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
+    dependencies = [("engine", "0108_profile_registration_survey_fields")]
     operations = [
-        migrations.CreateModel(name="DatasetConfiguration", fields=[
-            ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-            ("sampling_method", models.CharField(max_length=32)),
-            ("sampled_frames", models.JSONField(default=list)),
-            ("conditions", models.JSONField(default=dict)),
-            ("updated_date", models.DateTimeField(auto_now=True)),
-            ("created_by", models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-            ("ground_truth_job", models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="engine.job")),
-            ("task", models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name="evaluation_dataset", to="engine.task")),
-        ]),
-        migrations.CreateModel(name="EvaluationRun", fields=[
-            ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-            ("model_path", models.CharField(max_length=1024)),
-            ("confidence", models.FloatField(default=0.25)),
-            ("iou_threshold", models.FloatField(default=0.5)),
-            ("status", models.CharField(choices=[("running", "Running"), ("completed", "Completed"), ("failed", "Failed")], default="running", max_length=16)),
-            ("metrics", models.JSONField(default=dict)),
-            ("predictions", models.JSONField(default=list)),
-            ("error", models.TextField(blank=True)),
-            ("created_date", models.DateTimeField(auto_now_add=True)),
-            ("finished_date", models.DateTimeField(blank=True, null=True)),
-            ("created_by", models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-            ("ground_truth_job", models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to="engine.job")),
-            ("task", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="yolo_evaluations", to="engine.task")),
-        ]),
+        migrations.CreateModel(
+            name="RefereePrediction",
+            fields=[
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("frame", models.PositiveIntegerField(db_index=True)),
+                ("external_id", models.CharField(max_length=128)),
+                ("label", models.CharField(max_length=128)),
+                ("confidence", models.FloatField()),
+                ("bbox", models.JSONField()),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                ("job", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="qc_referee_predictions", to="engine.job")),
+            ],
+        ),
+        migrations.CreateModel(
+            name="QCRisk",
+            fields=[
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("frame", models.PositiveIntegerField(db_index=True)),
+                ("fingerprint", models.CharField(max_length=255)),
+                ("risk_type", models.CharField(choices=[("drop", "Drop"), ("flip", "Flip"), ("shift", "Shift"), ("spawn", "Spawn")], max_length=16)),
+                ("status", models.CharField(choices=[("pending", "Pending"), ("in_review", "In review"), ("confirmed", "Confirmed"), ("rejected", "Rejected"), ("resolved", "Resolved")], default="pending", max_length=16)),
+                ("score", models.FloatField(db_index=True)),
+                ("iou", models.FloatField(blank=True, null=True)),
+                ("human_object_id", models.CharField(blank=True, max_length=64, null=True)),
+                ("human_label", models.CharField(blank=True, max_length=128, null=True)),
+                ("referee_label", models.CharField(blank=True, max_length=128, null=True)),
+                ("human_bbox", models.JSONField(blank=True, null=True)),
+                ("referee_bbox", models.JSONField(blank=True, null=True)),
+                ("updated_date", models.DateTimeField(auto_now=True)),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                ("job", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="qc_risks", to="engine.job")),
+                ("prediction", models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name="risks", to="model_assisted_qc.refereeprediction")),
+            ],
+            options={"ordering": ("-score", "frame", "id")},
+        ),
+        migrations.AddConstraint(model_name="refereeprediction", constraint=models.UniqueConstraint(fields=("job", "frame", "external_id"), name="unique_qc_referee_prediction")),
+        migrations.AddConstraint(model_name="qcrisk", constraint=models.UniqueConstraint(fields=("job", "fingerprint"), name="unique_qc_risk")),
     ]

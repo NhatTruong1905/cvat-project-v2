@@ -6,7 +6,7 @@
 import React from 'react';
 import { useHistory } from 'react-router';
 import { Row, Col } from 'antd/lib/grid';
-import { ExperimentOutlined, LeftOutlined, MoreOutlined } from '@ant-design/icons';
+import { LeftOutlined, MoreOutlined } from '@ant-design/icons';
 import Button from 'antd/lib/button';
 import Text from 'antd/lib/typography/Text';
 import TaskActionsComponent from 'components/tasks-page/actions-menu';
@@ -48,13 +48,6 @@ export default function DetailsComponent(props: DetailsComponentProps): JSX.Elem
                 )}
             </Col>
             <Col>
-                <Button
-                    icon={<ExperimentOutlined />}
-                    onClick={() => history.push(`/tasks/${taskInstance.id}/model-assisted-qc`)}
-                    style={{ marginRight: 8 }}
-                >
-                    Model-assisted QC
-                </Button>
                 <TaskActionsComponent
                     taskInstance={taskInstance}
                     onUpdateTask={onUpdateTask}
