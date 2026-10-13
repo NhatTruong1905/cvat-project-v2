@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Hướng dẫn Annotator — Label và QA/QC</title>
+  <title>Hướng dẫn cài đặt, Label và QA/QC</title>
   <style>
     :root{--blue:#1769d2;--navy:#102d52;--ink:#172033;--muted:#647184;--line:#dbe3ed;--bg:#f4f7fb;--ok:#16834a;--warn:#a65a00}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Segoe UI",Arial,sans-serif}
@@ -14,20 +14,59 @@
     li+li{margin-top:8px}.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.flow div{padding:16px;text-align:center;border:1px solid #cbdcf3;border-radius:10px;background:#f2f7ff}.flow b{display:block;color:var(--blue);font-size:24px}
     .note,.ok,.warn{padding:13px 15px;margin:15px 0;border-left:4px solid;border-radius:7px}.note{background:#edf5ff;border-color:var(--blue)}.ok{background:#eef9f3;border-color:var(--ok)}.warn{background:#fff7e7;border-color:var(--warn)}
     table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{border:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{background:#eef3f8}
-    code{background:#eef2f7;padding:2px 5px;border-radius:4px}.check{list-style:none;padding:0}.check li{background:#f6f8fb;padding:9px 11px;border-radius:7px}.check li:before{content:"☐";color:var(--blue);font-weight:bold;margin-right:9px}
+    code{background:#eef2f7;padding:2px 5px;border-radius:4px}.cmd{display:block;overflow:auto;padding:14px 16px;background:#142033;color:#eaf2ff;border-radius:8px;white-space:pre}.path{overflow-wrap:anywhere}.check{list-style:none;padding:0}.check li{background:#f6f8fb;padding:9px 11px;border-radius:7px}.check li:before{content:"☐";color:var(--blue);font-weight:bold;margin-right:9px}
     footer{text-align:center;color:var(--muted);padding:20px}@media(max-width:650px){section{padding:24px 19px}.flow{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-<header><div><small>CHỈ DÀNH CHO ANNOTATOR</small><h1>Label và kiểm tra QA/QC</h1><p>Annotate như bình thường, lưu kết quả và dùng QA/QC để xem đúng vị trí cần kiểm tra lại.</p></div></header>
+<header><div><small>TỪ CLONE GITHUB ĐẾN ANNOTATION</small><h1>Chạy CVAT, Label và kiểm tra QA/QC</h1><p>Hướng dẫn đầy đủ để tải dự án, khởi động Docker, tạo task, label và dùng model trọng tài QA/QC.</p></div></header>
 <main>
   <section>
-    <h2>Quy trình 3 bước</h2>
+    <h2>A. Chuẩn bị máy</h2>
+    <p>Cài hai phần mềm sau trước khi bắt đầu:</p>
+    <ul><li><b>Git</b> để tải source code.</li><li><b>Docker Desktop</b>; mở Docker Desktop và chờ trạng thái Engine running.</li></ul>
+    <div class="warn">Lần chạy đầu cần Internet để tải Docker image và model YOLO-BDD100K. Không cần tự tải file <code>best.pt</code>.</div>
+  </section>
+  <section>
+    <h2>B. Clone dự án và chạy CVAT</h2>
+    <p>Mở PowerShell/Terminal và chạy lần lượt:</p>
+    <code class="cmd">git clone https://github.com/NhatTruong1905/cvat-project-v2.git
+cd cvat-project-v2
+git checkout develop
+docker compose up -d</code>
+    <p>Docker sẽ tự build CVAT có QA/QC, tải model trọng tài và chạy prediction trên bộ ảnh demo. Kiểm tra trạng thái bằng:</p>
+    <code class="cmd">docker compose ps -a
+docker compose logs -f model_qc_pipeline</code>
+    <p>Khi log model kết thúc và các dịch vụ <code>cvat_server</code>, <code>cvat_ui</code> ở trạng thái <b>Up</b>, mở:</p>
+    <code class="cmd">http://localhost:8080</code>
+    <div class="note">Lần đầu có thể mất nhiều phút tùy tốc độ mạng và máy. Các lần sau dùng model/prediction trong Docker volume nên nhanh hơn.</div>
+  </section>
+  <section>
+    <h2>C. Tạo tài khoản và task demo</h2>
+    <ol>
+      <li>Ở trang CVAT, chọn <b>Create an account</b>, đăng ký rồi đăng nhập.</li>
+      <li>Vào <b>Tasks → dấu + → Create new task</b>.</li>
+      <li>Đặt tên task, ví dụ <code>MVP-QC-BDD100K-100</code>.</li>
+      <li>Trong <b>Labels</b>, chọn chế độ <b>Raw</b>. Mở file <code class="path">data/bdd100k_mvp_100_seed42/cvat_labels_raw.json</code>, copy toàn bộ nội dung vào Raw và lưu.</li>
+      <li>Ở phần dữ liệu, tải file <code class="path">data/bdd100k_mvp_100_seed42/bdd100k_mvp_100_seed42_images.zip</code> rồi tạo task.</li>
+      <li>Chờ task xử lý xong và trạng thái không còn <b>Queued</b>.</li>
+    </ol>
+    <h3>Import prelabel YOLOv8n</h3>
+    <ol>
+      <li>Tại task, chọn <b>Actions → Upload annotations</b>.</li>
+      <li>Format: <b>Ultralytics YOLO Detection 1.0</b>.</li>
+      <li>Chọn <code class="path">data/bdd100k_mvp_100_seed42/model_outputs/prelabels_yolov8n_cvat_v2.zip</code>.</li>
+      <li>Chờ import hoàn tất rồi nhấn <b>Open</b>.</li>
+    </ol>
+    <div class="ok">Chỉ ảnh, danh sách class và prelabel được lưu trên Git. Model trọng tài và prediction được Docker tự quản lý, annotator không phải import.</div>
+  </section>
+  <section>
+    <h2>D. Quy trình annotate 3 bước</h2>
     <div class="flow"><div><b>1</b>Label hoặc sửa box</div><div><b>2</b>Save rồi nhấn QA/QC</div><div><b>3</b>Chọn “Chỉ lỗi” và xử lý</div></div>
     <div class="note">Annotator không cần chạy model, không cần import prediction trọng tài và không cần xem Ground Truth.</div>
   </section>
   <section>
-    <h2>1. Mở công việc</h2>
+    <h2>1. Mở công việc hằng ngày</h2>
     <ol><li>Mở <code>http://localhost:8080</code> và đăng nhập.</li><li>Vào <b>Tasks</b>, mở task được giao.</li><li>Nhấn <b>Open</b> để vào màn hình annotation.</li></ol>
     <div class="warn">Chỉ làm đúng task/job được giao. Không thay đổi labels hoặc cấu hình task.</div>
   </section>
@@ -58,9 +97,12 @@
   </section>
   <section>
     <h2>Khi gặp lỗi</h2>
-    <table><tbody><tr><th>Không thấy nút QA/QC</th><td>Refresh cứng bằng <code>Ctrl + F5</code>.</td></tr><tr><th>Không có risk</th><td>Save frame, sau đó nhấn <b>Kiểm tra lại frame</b>.</td></tr><tr><th>“No referee predictions”</th><td>Báo người quản trị; annotator không tự import model.</td></tr><tr><th>Vùng đỏ không đúng</th><td>Chọn <b>False alarm</b> và tiếp tục theo ảnh thật.</td></tr></tbody></table>
+    <table><tbody><tr><th>Trang chưa mở</th><td>Chạy <code>docker compose ps -a</code>; model lần đầu phải chạy xong thì server mới khởi động.</td></tr><tr><th>Model pipeline lỗi</th><td>Kiểm tra Internet rồi chạy <code>docker compose up -d</code> lại.</td></tr><tr><th>Không thấy nút QA/QC</th><td>Refresh cứng bằng <code>Ctrl + F5</code>.</td></tr><tr><th>Task bị Queued lâu</th><td>Kiểm tra <code>docker compose ps</code>, đặc biệt worker import.</td></tr><tr><th>Không có risk</th><td>Save frame, sau đó nhấn <b>Kiểm tra lại frame</b>.</td></tr><tr><th>“No referee predictions”</th><td>Chạy <code>docker compose logs model_qc_pipeline</code> và báo người quản trị.</td></tr><tr><th>Vùng đỏ không đúng</th><td>Chọn <b>False alarm</b> và tiếp tục theo ảnh thật.</td></tr></tbody></table>
+    <h3>Dừng và chạy lại</h3>
+    <code class="cmd">docker compose stop
+docker compose up -d</code>
   </section>
-  <footer>Model-Assisted QA/QC · Hướng dẫn thao tác dành cho Annotator</footer>
+  <footer>Model-Assisted QA/QC · Clone → Docker → Task → Label → QA/QC</footer>
 </main>
 </body>
 </html>
