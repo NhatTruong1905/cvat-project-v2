@@ -5,7 +5,7 @@ import React, {
     useCallback, useEffect, useRef, useState,
 } from 'react';
 import Axios, { AxiosError } from 'axios';
-import { AuditOutlined } from '@ant-design/icons';
+import { AuditOutlined, LoadingOutlined } from '@ant-design/icons';
 import Alert from 'antd/lib/alert';
 import Button from 'antd/lib/button';
 import Modal from 'antd/lib/modal';
@@ -175,15 +175,14 @@ function ModelQCAssistant(props: Props): JSX.Element {
         <>
             <Button
                 type='link'
-                className='cvat-annotation-header-button'
-                icon={<AuditOutlined />}
-                loading={loading}
+                className='cvat-annotation-header-qc-button cvat-annotation-header-button'
                 onClick={(): void => {
                     setOpen(true);
                     evaluateFrame();
                 }}
             >
-                QA/QC{queue.visible_count ? ` (${queue.visible_count})` : ''}
+                {loading ? <LoadingOutlined /> : <AuditOutlined />}
+                {`QA/QC${queue.visible_count ? ` (${queue.visible_count})` : ''}`}
             </Button>
             <Modal
                 open={open}
