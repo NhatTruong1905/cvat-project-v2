@@ -16,5 +16,6 @@ Active implementation:
 - `services.py`: prediction attachment and risk persistence.
 - `views.py`: job evaluation, risk queue, decisions, and dashboard.
 - `models.py`: `RefereePrediction` and `QCRisk` only.
+- `benchmark/`: isolated YOLO-BDD100K baseline comparison against Grounding DINO and Florence-2.
 
 Legacy phase-based Ground Truth/evaluation/benchmark code has been removed.

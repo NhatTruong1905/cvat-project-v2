@@ -1,0 +1,8 @@
+huggingface-hub>=0.35,<2
+numpy>=1.26,<3
+pillow>=10,<13
+pycocotools>=2.0.7,<3
+torch>=2.2,<3
+transformers==4.56.2
+ultralytics>=8.3,<9
+

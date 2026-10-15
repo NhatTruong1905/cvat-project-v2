@@ -1,0 +1,14 @@
+{
+  "model": "florence2",
+  "role": "candidate",
+  "model_id": "florence-community/Florence-2-base-ft",
+  "device": "Tesla T4",
+  "images": 100,
+  "detections": 964,
+  "total_seconds": 167.9851,
+  "mean_ms": 1679.85,
+  "median_ms": 1692.63,
+  "p95_ms": 2861.75,
+  "fps": 0.595,
+  "peak_gpu_memory_mb": 643.3
+}

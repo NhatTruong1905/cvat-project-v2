@@ -1,0 +1,14 @@
+{
+  "model": "yolo_bdd100k",
+  "role": "baseline",
+  "model_id": "dronefreak/bdd100k-yolov8s",
+  "device": "Tesla T4",
+  "images": 100,
+  "detections": 7674,
+  "total_seconds": 3.9112,
+  "mean_ms": 39.11,
+  "median_ms": 36.55,
+  "p95_ms": 59.28,
+  "fps": 25.567,
+  "peak_gpu_memory_mb": 106.5
+}

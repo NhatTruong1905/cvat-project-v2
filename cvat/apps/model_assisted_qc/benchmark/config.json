@@ -1,0 +1,40 @@
+{
+  "classes": [
+    "pedestrian",
+    "rider",
+    "car",
+    "truck",
+    "bus",
+    "train",
+    "motorcycle",
+    "bicycle",
+    "traffic light",
+    "traffic sign"
+  ],
+  "models": {
+    "yolo_bdd100k": {
+      "kind": "yolo",
+      "role": "baseline",
+      "model_id": "dronefreak/bdd100k-yolov8s",
+      "weights_file": "best.pt",
+      "confidence": 0.01,
+      "image_size": 960
+    },
+    "grounding_dino": {
+      "kind": "grounding_dino",
+      "role": "candidate",
+      "model_id": "IDEA-Research/grounding-dino-tiny",
+      "box_threshold": 0.01,
+      "text_threshold": 0.20
+    },
+    "florence2": {
+      "kind": "florence2",
+      "role": "candidate",
+      "model_id": "florence-community/Florence-2-base-ft",
+      "task": "<OD>",
+      "max_new_tokens": 1024,
+      "default_score": 1.0
+    }
+  }
+}
+

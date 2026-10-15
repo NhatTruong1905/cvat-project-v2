@@ -1,0 +1,14 @@
+{
+  "model": "grounding_dino",
+  "role": "candidate",
+  "model_id": "IDEA-Research/grounding-dino-tiny",
+  "device": "Tesla T4",
+  "images": 100,
+  "detections": 1872,
+  "total_seconds": 62.5599,
+  "mean_ms": 625.6,
+  "median_ms": 611.61,
+  "p95_ms": 736.6,
+  "fps": 1.598,
+  "peak_gpu_memory_mb": 1991.9
+}
